@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Services", href: "#services" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "#about", external: true },
+  { label: "Projects", href: "#projects", external: true },
+  { label: "Services", href: "#services", external: true },
+  { label: "Contact", href: "/quote", external: false },
 ];
 
 const Navbar = () => {
@@ -21,15 +22,25 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="font-body text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.external ? (
+              <a
+                key={link.label}
+                href={link.href}
+                className="font-body text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.label}
+                to={link.href}
+                className="font-body text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -52,16 +63,27 @@ const Navbar = () => {
             className="md:hidden bg-background border-b border-border overflow-hidden"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="font-display text-2xl text-foreground hover:text-primary transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="font-display text-2xl text-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="font-display text-2xl text-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
             </div>
           </motion.div>
         )}
