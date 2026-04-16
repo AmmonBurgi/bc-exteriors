@@ -108,7 +108,7 @@ const GetAQuote = () => {
       </div>
 
       <div className="pt-32 pb-24 px-6 md:px-12">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Link
             to="/"
             className="inline-flex items-center gap-2 font-body text-sm text-muted-foreground hover:text-foreground transition-colors mb-10"

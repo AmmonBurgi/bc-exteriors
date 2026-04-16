@@ -78,7 +78,7 @@ function buildEmailHtml(data) {
           <!-- Header -->
           <tr>
             <td style="background:#111;padding:32px 40px;">
-              <p style="margin:0;font-size:28px;font-weight:700;letter-spacing:3px;color:#f5a623;font-family:Arial,sans-serif;">
+              <p style="margin:0;font-size:28px;font-weight:700;letter-spacing:3px;color:#ccab76;font-family:Arial,sans-serif;">
                 B&amp;C EXTERIORS
               </p>
               <p style="margin:8px 0 0;font-size:13px;color:#888;letter-spacing:1px;text-transform:uppercase;">
@@ -95,18 +95,18 @@ function buildEmailHtml(data) {
               </p>
 
               <!-- Contact Info -->
-              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#f5a623;">
+              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#ccab76;">
                 Contact Information
               </h2>
               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #f0f0f0;border-radius:4px;margin-bottom:28px;">
                 ${row("Name", `${data.firstName} ${data.lastName}`)}
                 ${row("Company", data.company)}
-                ${row("Email", `<a href="mailto:${data.email}" style="color:#f5a623;">${data.email}</a>`)}
+                ${row("Email", `<a href="mailto:${data.email}" style="color:#ccab76;">${data.email}</a>`)}
                 ${row("Phone", data.phone)}
               </table>
 
               <!-- Project Details -->
-              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#f5a623;">
+              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#ccab76;">
                 Project Details
               </h2>
               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #f0f0f0;border-radius:4px;margin-bottom:28px;">
@@ -117,7 +117,7 @@ function buildEmailHtml(data) {
               </table>
 
               <!-- Exterior Materials -->
-              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#f5a623;">
+              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#ccab76;">
                 Exterior Materials
               </h2>
               <ul style="margin:0 0 28px;padding-left:20px;color:#222;font-size:14px;line-height:1.8;">
@@ -125,10 +125,10 @@ function buildEmailHtml(data) {
               </ul>
 
               <!-- Description -->
-              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#f5a623;">
+              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#ccab76;">
                 Project Description
               </h2>
-              <p style="margin:0 0 32px;font-size:14px;color:#444;line-height:1.7;background:#f9f9f9;padding:16px;border-radius:4px;border-left:3px solid #f5a623;">
+              <p style="margin:0 0 32px;font-size:14px;color:#444;line-height:1.7;background:#f9f9f9;padding:16px;border-radius:4px;border-left:3px solid #ccab76;">
                 ${data.description.replace(/\n/g, "<br />")}
               </p>
             </td>

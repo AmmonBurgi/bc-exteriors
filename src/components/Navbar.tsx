@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import companyLogo from "@/assets/company-logo-removebg-preview.png";
 
 const navLinks = [
   { label: "About", href: "#about", external: true },
@@ -16,8 +17,8 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-20">
-        <a href="#" className="font-display text-3xl tracking-wider text-primary">
-          B&C EXTERIORS
+        <a href="#">
+          <img src={companyLogo} alt="B&C Exteriors" className="h-14 w-auto" />
         </a>
 
         {/* Desktop */}

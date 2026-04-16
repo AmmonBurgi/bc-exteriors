@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const SubcontractorsSection = () => (
   <section className="section-padding bg-background">
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
