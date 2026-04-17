@@ -11,13 +11,10 @@ const AboutSection = () => (
       >
         <h2 className="font-display text-5xl md:text-7xl text-foreground mb-8">About Us</h2>
         <p className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl">
-          You are why we exist, whether you are starting your organization, growing it, or developing
-          structures for others, we are here to ensure your building dreams and vision easily become reality.
+          With years of hands-on experience, we’ve turned our passion for quality home exteriors into a business that helps homeowners transform their houses into beautiful, lasting sanctuaries.
         </p>
         <p className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mt-6">
-          We do this by putting our people first and being the absolute best company to work for.
-          When we provide you a celebrated championship building team armed with the most up to date
-          tools and technology, we routinely create raving fans.
+          We take pride in every detail, offering expert services in siding, roofing, windows, and more, all tailored to withstand Utah’s unique climate. Our commitment is simple: to treat every home like it’s our own. From the first consultation to the final inspection, we’re dedicated to providing exceptional service, innovative solutions, and results that stand the test of time. At B&C Exteriors, your home’s exterior is our canvas—and your satisfaction is our greatest reward.
         </p>
         <a
           href="#"
