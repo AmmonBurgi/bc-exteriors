@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, FileUp, Plus, Send, X } from "lucide-react";
+import { ArrowLeft, FileUp, Send, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,31 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { Checkbox } from "@/components/ui/checkbox"; // saved for future checkbox material selector
-
-// const PROVIDERS = [
-//   { value: "lansing", label: "Lansing Building Products" },
-//   { value: "stone-world", label: "Stone World" },
-//   { value: "james-hardie", label: "James Hardie" },
-//   { value: "true-exterior", label: "TrueExterior" },
-//   { value: "other", label: "Other / Not Sure Yet" },
-// ];
-
-// EXTERIOR_MATERIALS saved for future checkbox material selector
-// const EXTERIOR_MATERIALS = [
-//   { id: "stucco", label: "Stucco" },
-//   { id: "eifs", label: "EIFS (Exterior Insulation & Finish System)" },
-//   { id: "stone-veneer", label: "Stone Veneer" },
-//   { id: "brick-masonry", label: "Brick / Masonry" },
-//   { id: "metal-panels", label: "Metal Panels" },
-//   { id: "fiber-cement", label: "Fiber Cement Siding" },
-//   { id: "vinyl-siding", label: "Vinyl Siding" },
-//   { id: "wood-siding", label: "Wood / Engineered Wood Siding" },
-//   { id: "composite-siding", label: "Composite Siding" },
-//   { id: "glass-curtain-wall", label: "Glass / Curtain Wall" },
-//   { id: "dryvit", label: "Dryvit / EIFS Repair & Restoration" },
-//   { id: "other", label: "Other / Not Sure Yet" },
-// ];
 
 type MaterialEntry = { name: string; provider: string };
 
@@ -78,32 +53,6 @@ const GetAQuote = () => {
 
   const set = (field: Exclude<keyof FormState, "materials">, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
-
-  const [materialDraft, setMaterialDraft] = useState({ name: "", provider: "" });
-
-  // const addMaterial = () => {
-  //   if (!materialDraft.name.trim()) return;
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     materials: [...prev.materials, { name: materialDraft.name.trim(), provider: materialDraft.provider }],
-  //   }));
-  //   setMaterialDraft({ name: "", provider: "" });
-  // };
-
-  // const removeMaterial = (index: number) =>
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     materials: prev.materials.filter((_, i) => i !== index),
-  //   }));
-
-  // toggleMaterial saved for future checkbox material selector
-  // const toggleMaterial = (id: string) =>
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     materials: prev.materials.includes(id)
-  //       ? prev.materials.filter((m) => m !== id)
-  //       : [...prev.materials, id],
-  //   }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -343,139 +292,6 @@ const GetAQuote = () => {
                   </button>
                 )}
               </fieldset>
-
-              {/* COMMENTED OUT — Exterior Materials section (saved for future use)
-              <fieldset className="space-y-4">
-                <legend className="font-display text-2xl text-foreground mb-2">
-                  Exterior Materials
-                </legend>
-                <p className="font-body text-sm text-muted-foreground mb-4">
-                  Add each material you're interested in along with its provider.
-                </p>
-
-                {form.materials.length > 0 && (
-                  <div className="space-y-2">
-                    {form.materials.map((mat, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between gap-3 px-4 py-3 border border-border rounded"
-                      >
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <span className="font-body text-sm text-foreground truncate">
-                            {mat.name}
-                          </span>
-                          {mat.provider && (
-                            <>
-                              <span className="text-muted-foreground">·</span>
-                              <span className="font-body text-sm text-muted-foreground truncate">
-                                {PROVIDERS.find((p) => p.value === mat.provider)?.label ?? mat.provider}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => removeMaterial(i)}
-                          aria-label="Remove material"
-                          className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
-                        >
-                          <X size={15} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="materialName">Material</Label>
-                    <p className="font-body text-xs text-muted-foreground">
-                      Use the exact product name from the provider's website when possible.
-                    </p>
-                    <Input
-                      id="materialName"
-                      value={materialDraft.name}
-                      onChange={(e) =>
-                        setMaterialDraft((d) => ({ ...d, name: e.target.value }))
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addMaterial();
-                        }
-                      }}
-                      placeholder="e.g. Stucco, Stone Veneer, Metal Panels…"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="materialProvider">Provider</Label>
-                    <Link
-                      to="/#material-providers"
-                      className="block font-body text-xs text-primary hover:underline"
-                    >
-                      Browse our material providers &rarr;
-                    </Link>
-                    <Select
-                      value={materialDraft.provider}
-                      onValueChange={(v) =>
-                        setMaterialDraft((d) => ({ ...d, provider: v }))
-                      }
-                    >
-                      <SelectTrigger id="materialProvider">
-                        <SelectValue placeholder="Select a provider" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PROVIDERS.map((p) => (
-                          <SelectItem key={p.value} value={p.value}>
-                            {p.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addMaterial}
-                  disabled={!materialDraft.name.trim()}
-                  className="gap-2 font-body"
-                >
-                  <Plus size={15} />
-                  Add Material
-                </Button>
-              </fieldset>
-              */}
-
-              {/* COMMENTED OUT — checkbox material selector (saved for future use)
-              <fieldset className="space-y-4">
-                <legend className="font-display text-2xl text-foreground mb-2">
-                  Exterior Materials
-                </legend>
-                <p className="font-body text-sm text-muted-foreground mb-4">
-                  Select all materials you're interested in (choose one or more).
-                </p>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {EXTERIOR_MATERIALS.map((mat) => (
-                    <label
-                      key={mat.id}
-                      htmlFor={mat.id}
-                      className="flex items-center gap-3 p-4 border border-border rounded cursor-pointer hover:border-primary transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5"
-                    >
-                      <Checkbox
-                        id={mat.id}
-                        checked={form.materials.includes(mat.id)}
-                        onCheckedChange={() => toggleMaterial(mat.id)}
-                      />
-                      <span className="font-body text-sm text-foreground">
-                        {mat.label}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-              */}
 
               {/* Additional info */}
               <fieldset className="space-y-6">

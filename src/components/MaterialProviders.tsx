@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { link } from "fs";
 
 const providers = [
   {
@@ -57,9 +56,6 @@ const MaterialProviders = () => (
               <h3 className="font-display text-2xl text-foreground mb-3">
                 {provider.name}
               </h3>
-              {/* <p className="font-body text-sm text-muted-foreground leading-relaxed">
-                {provider.desc}
-              </p> */}
             </motion.div>
           ))}
         </div>

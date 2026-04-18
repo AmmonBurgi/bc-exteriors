@@ -33,21 +33,6 @@ const transporter = nodemailer.createTransport({
 });
 
 function buildEmailHtml(data) {
-  const materialLabels = {
-    stucco: "Stucco",
-    eifs: "EIFS (Exterior Insulation & Finish System)",
-    "stone-veneer": "Stone Veneer",
-    "brick-masonry": "Brick / Masonry",
-    "metal-panels": "Metal Panels",
-    "fiber-cement": "Fiber Cement Siding",
-    "vinyl-siding": "Vinyl Siding",
-    "wood-siding": "Wood / Engineered Wood Siding",
-    "composite-siding": "Composite Siding",
-    "glass-curtain-wall": "Glass / Curtain Wall",
-    dryvit: "Dryvit / EIFS Repair & Restoration",
-    other: "Other / Not Sure Yet",
-  };
-
   const projectTypeLabels = {
     "commercial-contractor": "Commercial Contractor",
     "residential-contractor": "Residential Contractor",
@@ -73,19 +58,6 @@ function buildEmailHtml(data) {
     "over-1yr": "Over 1 Year",
     unknown: "Flexible / TBD",
   };
-
-  const materialsHtml =
-    data.materials && data.materials.length
-      ? data.materials
-          .map((m) => {
-            const label = typeof m === "string" ? (materialLabels[m] ?? m) : m.name;
-            const providerLabel = m.provider
-              ? ` <span style="color:#888;">(${m.provider})</span>`
-              : "";
-            return `<li style="margin:4px 0;">${label}${providerLabel}</li>`;
-          })
-          .join("")
-      : "<li>None selected</li>";
 
   const row = (label, value) =>
     value
@@ -144,14 +116,6 @@ function buildEmailHtml(data) {
                 ${row("Timeline", timelineLabels[data.timeline] ?? data.timeline)}
               </table>
 
-              <!-- Exterior Materials -->
-              <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#ccab76;">
-                Exterior Materials
-              </h2>
-              <ul style="margin:0 0 28px;padding-left:20px;color:#222;font-size:14px;line-height:1.8;">
-                ${materialsHtml}
-              </ul>
-
               <!-- Description -->
               <h2 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#ccab76;">
                 Project Description
@@ -206,7 +170,7 @@ app.post("/api/quote", upload.single("housePlans"), async (req, res) => {
   try {
     await transporter.sendMail({
       from: `"B&C Exteriors Quote Form" <${process.env.SMTP_USER}>`,
-      to: "ammonburgi@gmail.com",
+      to: "isaacb@bncexteriors.com",
       replyTo: data.email,
       subject: `New Quote Request — ${data.firstName} ${data.lastName}`,
       html: buildEmailHtml(data),

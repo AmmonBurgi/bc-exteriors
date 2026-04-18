@@ -1,15 +1,12 @@
 import { motion } from "framer-motion";
-import { Stone, House, Ruler, BrickWall} from "lucide-react";
+import { Stone, House, Ruler, BrickWall, CloudRain } from "lucide-react";
 
 const services = [
-  // { icon: Building2, title: "General Contracting", desc: "Full-service construction management from concept to completion." },
-  // { icon: HardHat, title: "Design-Build", desc: "Integrated design and construction for streamlined project delivery." },
-  // { icon: Ruler, title: "Preconstruction", desc: "Early planning, budgeting, and value engineering expertise." },
-  // { icon: Wrench, title: "Concrete & Structure", desc: "Specialized structural and concrete construction services." },
   { icon: Stone, title: "Stone", desc: "High-quality stone materials and installation services." },
   { icon: Ruler, title: "Siding", desc: "Expert siding installation." },
   { icon: House, title: "Stucco", desc: "Professional stucco application." },
-  { icon: BrickWall, title: "Brickwork", desc: "Expert brickwork services." },
+  { icon: BrickWall, title: "Masonry", desc: "Expert masonry services." },
+  { icon: CloudRain, title: "Gutters", desc: "Reliable gutter, soffit, and fascia installation." },
 ];
 
 const ServicesSection = () => (
@@ -27,7 +24,7 @@ const ServicesSection = () => (
         </p>
       </motion.div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
         {services.map((svc, i) => (
           <motion.div
             key={svc.title}

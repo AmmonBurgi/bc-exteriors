@@ -10,8 +10,8 @@ const Footer = () => (
         </div>
         <div>
           <h4 className="font-display text-lg text-foreground mb-4">Quick Links</h4>
-          {["About", "Projects", "Services"].map((l) => (
-            <a key={l} href={`/#${l.toLowerCase()}`} className="block font-body text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
+          {["About", "Contact", "Services", "Materials"].map((l) => (
+            <a key={l} href={l === "Contact" ? "/quote" : `/#${l.toLowerCase()}`} className="block font-body text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
               {l}
             </a>
           ))}
@@ -24,8 +24,11 @@ const Footer = () => (
         </div>
         <div>
           <h4 className="font-display text-lg text-foreground mb-4">Contact</h4>
-          <p className="font-body text-sm text-muted-foreground mb-2">801.415.6000</p>
-          <p className="font-body text-sm text-muted-foreground">info@big-d.com</p>
+          <p className="font-body text-sm text-muted-foreground mb-2">385.335.2598</p>
+          <p className="font-body text-sm text-muted-foreground">isaacb@bncexteriors.com</p>
+          <a href="/quote" className="inline-block mt-4 font-body text-sm font-semibold uppercase tracking-widest text-primary border-b-2 border-primary pb-1 hover:opacity-80 transition-opacity">
+            Get a Quote
+          </a>
         </div>
       </div>
       <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">

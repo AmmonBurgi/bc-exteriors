@@ -16,12 +16,6 @@ const AboutSection = () => (
         <p className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mt-6">
           We take pride in every detail, offering expert services in siding, roofing, windows, and more, all tailored to withstand Utah’s unique climate. Our commitment is simple: to treat every home like it’s our own. From the first consultation to the final inspection, we’re dedicated to providing exceptional service, innovative solutions, and results that stand the test of time. At B&C Exteriors, your home’s exterior is our canvas—and your satisfaction is our greatest reward.
         </p>
-        {/* <a
-          href="#"
-          className="inline-block mt-10 font-body text-sm font-semibold uppercase tracking-widest text-primary border-b-2 border-primary pb-1 hover:opacity-80 transition-opacity"
-        >
-          Learn More
-        </a> */}
       </motion.div>
     </div>
   </section>
