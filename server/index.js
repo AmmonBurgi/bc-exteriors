@@ -32,6 +32,7 @@ const upload = multer({
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 587,
+  family: 4, // force IPv4 — Railway does not support IPv6 outbound
   secure: process.env.SMTP_SECURE === "true",
   auth: {
     user: process.env.SMTP_USER,
