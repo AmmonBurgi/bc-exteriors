@@ -3,11 +3,18 @@ import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
 import multer from "multer";
+import { fileURLToPath } from "url";
+import path from "path";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = process.env.SERVER_PORT || 3001;
+// Railway injects PORT; fall back to SERVER_PORT for local dev
+const PORT = process.env.PORT || process.env.SERVER_PORT || 3001;
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:8080" }));
+// Only apply CORS in development (same-origin in production)
+if (process.env.NODE_ENV !== "production") {
+  app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:8080" }));
+}
 app.use(express.json());
 
 const upload = multer({
@@ -183,6 +190,16 @@ app.post("/api/quote", upload.single("housePlans"), async (req, res) => {
     res.status(500).json({ error: "Failed to send email. Please try again later." });
   }
 });
+
+// Serve the Vite build in production
+if (process.env.NODE_ENV === "production") {
+  const distPath = path.resolve(__dirname, "../dist");
+  app.use(express.static(distPath));
+  // Catch-all: return index.html for client-side routes
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`API server listening on http://localhost:${PORT}`);
