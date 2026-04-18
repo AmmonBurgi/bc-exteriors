@@ -2,12 +2,25 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
+import multer from "multer";
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3001;
 
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:8080" }));
 app.use(express.json());
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB max
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF files are allowed."));
+    }
+  },
+});
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -35,12 +48,20 @@ function buildEmailHtml(data) {
     other: "Other / Not Sure Yet",
   };
 
+  const projectTypeLabels = {
+    "commercial-contractor": "Commercial Contractor",
+    "residential-contractor": "Residential Contractor",
+    homeowner: "Homeowner",
+    other: "Other",
+  };
+
   const budgetLabels = {
-    "under-50k": "Under $50K",
-    "50k-150k": "$50K – $150K",
-    "150k-500k": "$150K – $500K",
+    "under-75k": "Under $75K",
+    "75k-150k": "$75K – $150K",
+    "150k-250k": "$150K – $250K",
+    "250k-500k": "$250K – $500K",
     "500k-1m": "$500K – $1M",
-    "over-1m": "Over $1M",
+    "over-1m": "$1M+",
     unknown: "Not Sure Yet",
   };
 
@@ -55,7 +76,15 @@ function buildEmailHtml(data) {
 
   const materialsHtml =
     data.materials && data.materials.length
-      ? data.materials.map((m) => `<li style="margin:4px 0;">${materialLabels[m] ?? m}</li>`).join("")
+      ? data.materials
+          .map((m) => {
+            const label = typeof m === "string" ? (materialLabels[m] ?? m) : m.name;
+            const providerLabel = m.provider
+              ? ` <span style="color:#888;">(${m.provider})</span>`
+              : "";
+            return `<li style="margin:4px 0;">${label}${providerLabel}</li>`;
+          })
+          .join("")
       : "<li>None selected</li>";
 
   const row = (label, value) =>
@@ -100,7 +129,6 @@ function buildEmailHtml(data) {
               </h2>
               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #f0f0f0;border-radius:4px;margin-bottom:28px;">
                 ${row("Name", `${data.firstName} ${data.lastName}`)}
-                ${row("Company", data.company)}
                 ${row("Email", `<a href="mailto:${data.email}" style="color:#ccab76;">${data.email}</a>`)}
                 ${row("Phone", data.phone)}
               </table>
@@ -111,7 +139,7 @@ function buildEmailHtml(data) {
               </h2>
               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #f0f0f0;border-radius:4px;margin-bottom:28px;">
                 ${row("Location", data.location)}
-                ${row("Project Type", data.projectType)}
+                ${row("Project Type", projectTypeLabels[data.projectType] ?? data.projectType)}
                 ${row("Budget", budgetLabels[data.budget] ?? data.budget)}
                 ${row("Timeline", timelineLabels[data.timeline] ?? data.timeline)}
               </table>
@@ -151,13 +179,28 @@ function buildEmailHtml(data) {
 </html>`;
 }
 
-app.post("/api/quote", async (req, res) => {
-  const data = req.body;
+app.post("/api/quote", upload.single("housePlans"), async (req, res) => {
+  // Form fields arrive as JSON string when sent via FormData
+  let data;
+  try {
+    data = req.body.data ? JSON.parse(req.body.data) : req.body;
+  } catch {
+    return res.status(400).json({ error: "Invalid form data." });
+  }
 
   const required = ["firstName", "lastName", "email", "location", "projectType", "description"];
   const missing = required.filter((f) => !data[f]?.toString().trim());
   if (missing.length) {
     return res.status(400).json({ error: `Missing required fields: ${missing.join(", ")}` });
+  }
+
+  const attachments = [];
+  if (req.file) {
+    attachments.push({
+      filename: req.file.originalname,
+      content: req.file.buffer,
+      contentType: "application/pdf",
+    });
   }
 
   try {
@@ -167,6 +210,7 @@ app.post("/api/quote", async (req, res) => {
       replyTo: data.email,
       subject: `New Quote Request — ${data.firstName} ${data.lastName}`,
       html: buildEmailHtml(data),
+      attachments,
     });
 
     res.json({ ok: true });

@@ -6,10 +6,10 @@ import companyLogo from "@/assets/company-logo-removebg-preview.png";
 
 const navLinks = [
   { label: "About", href: "#about", external: true },
+  { label: "Contact", href: "/quote", external: false },
   { label: "Projects", href: "#projects", external: true },
   { label: "Services", href: "#services", external: true },
   { label: "Materials", href: "#material-providers", external: true },
-  { label: "Contact", href: "/quote", external: false },
 ];
 
 const Navbar = () => {

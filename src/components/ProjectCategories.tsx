@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -15,6 +16,7 @@ const categories = [
 
 const ProjectCategories = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const scroll = (dir: number) => {
     scrollRef.current?.scrollBy({ left: dir * 340, behavior: "smooth" });
@@ -42,10 +44,10 @@ const ProjectCategories = () => {
 
         <div ref={scrollRef} className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory" style={{ scrollbarWidth: "none" }}>
           {categories.map((cat) => (
-            <a
+            <button
               key={cat.name}
-              href="#"
-              className="group flex-shrink-0 w-72 md:w-80 snap-start"
+              onClick={() => navigate("/gallery")}
+              className="group flex-shrink-0 w-72 md:w-80 snap-start text-left"
             >
               <div className="relative overflow-hidden rounded aspect-[4/5]">
                 <img
@@ -55,11 +57,8 @@ const ProjectCategories = () => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-background/40 group-hover:bg-background/20 transition-colors" />
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <span className="font-display text-2xl text-foreground">{cat.name}</span>
-                </div>
               </div>
-            </a>
+            </button>
           ))}
         </div>
       </div>

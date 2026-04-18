@@ -43,13 +43,6 @@ const ServicesSection = () => (
           </motion.div>
         ))}
       </div>
-
-      <a
-        href="#"
-        className="inline-block mt-12 font-body text-sm font-semibold uppercase tracking-widest text-primary border-b-2 border-primary pb-1 hover:opacity-80 transition-opacity"
-      >
-        View All Services
-      </a>
     </div>
   </section>
 );

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Plus, Send, X } from "lucide-react";
+import { ArrowLeft, FileUp, Plus, Send, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,13 +15,13 @@ import {
 } from "@/components/ui/select";
 // import { Checkbox } from "@/components/ui/checkbox"; // saved for future checkbox material selector
 
-const PROVIDERS = [
-  { value: "lansing", label: "Lansing Building Products" },
-  { value: "stone-world", label: "Stone World" },
-  { value: "james-hardie", label: "James Hardie" },
-  { value: "true-exterior", label: "TrueExterior" },
-  { value: "other", label: "Other / Not Sure Yet" },
-];
+// const PROVIDERS = [
+//   { value: "lansing", label: "Lansing Building Products" },
+//   { value: "stone-world", label: "Stone World" },
+//   { value: "james-hardie", label: "James Hardie" },
+//   { value: "true-exterior", label: "TrueExterior" },
+//   { value: "other", label: "Other / Not Sure Yet" },
+// ];
 
 // EXTERIOR_MATERIALS saved for future checkbox material selector
 // const EXTERIOR_MATERIALS = [
@@ -44,7 +44,6 @@ type MaterialEntry = { name: string; provider: string };
 type FormState = {
   firstName: string;
   lastName: string;
-  company: string;
   email: string;
   phone: string;
   location: string;
@@ -58,7 +57,6 @@ type FormState = {
 const INITIAL: FormState = {
   firstName: "",
   lastName: "",
-  company: "",
   email: "",
   phone: "",
   location: "",
@@ -70,7 +68,10 @@ const INITIAL: FormState = {
 };
 
 const GetAQuote = () => {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   const [form, setForm] = useState<FormState>(INITIAL);
+  const [housePlansFile, setHousePlansFile] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,20 +81,20 @@ const GetAQuote = () => {
 
   const [materialDraft, setMaterialDraft] = useState({ name: "", provider: "" });
 
-  const addMaterial = () => {
-    if (!materialDraft.name.trim()) return;
-    setForm((prev) => ({
-      ...prev,
-      materials: [...prev.materials, { name: materialDraft.name.trim(), provider: materialDraft.provider }],
-    }));
-    setMaterialDraft({ name: "", provider: "" });
-  };
+  // const addMaterial = () => {
+  //   if (!materialDraft.name.trim()) return;
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     materials: [...prev.materials, { name: materialDraft.name.trim(), provider: materialDraft.provider }],
+  //   }));
+  //   setMaterialDraft({ name: "", provider: "" });
+  // };
 
-  const removeMaterial = (index: number) =>
-    setForm((prev) => ({
-      ...prev,
-      materials: prev.materials.filter((_, i) => i !== index),
-    }));
+  // const removeMaterial = (index: number) =>
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     materials: prev.materials.filter((_, i) => i !== index),
+  //   }));
 
   // toggleMaterial saved for future checkbox material selector
   // const toggleMaterial = (id: string) =>
@@ -109,11 +110,10 @@ const GetAQuote = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/quote", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const body = new FormData();
+      body.append("data", JSON.stringify(form));
+      if (housePlansFile) body.append("housePlans", housePlansFile);
+      const res = await fetch("/api/quote", { method: "POST", body });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Submission failed.");
       setSubmitted(true);
@@ -214,15 +214,6 @@ const GetAQuote = () => {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="company">Company / Organization</Label>
-                  <Input
-                    id="company"
-                    value={form.company}
-                    onChange={(e) => set("company", e.target.value)}
-                    placeholder="Acme Development LLC"
-                  />
-                </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email *</Label>
@@ -274,20 +265,86 @@ const GetAQuote = () => {
                       <SelectValue placeholder="Select a project type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="commercial">Commercial</SelectItem>
-                      <SelectItem value="residential">Residential</SelectItem>
-                      <SelectItem value="industrial">Industrial</SelectItem>
-                      <SelectItem value="mixed-use">Mixed Use</SelectItem>
-                      <SelectItem value="renovation">
-                        Renovation / Remodel
-                      </SelectItem>
+                      <SelectItem value="commercial-contractor">Commercial Contractor</SelectItem>
+                      <SelectItem value="residential-contractor">Residential Contractor</SelectItem>
+                      <SelectItem value="homeowner">Homeowner</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </fieldset>
 
-              {/* Exterior materials */}
+              {/* House plans upload */}
+              <fieldset className="space-y-4">
+                <legend className="font-display text-2xl text-foreground mb-2">
+                  House Plans
+                </legend>
+                <p className="font-body text-sm text-muted-foreground mb-4">
+                  Upload your house plans as a PDF so we can provide the most accurate estimate.
+                </p>
+
+                <label
+                  htmlFor="housePlans"
+                  className={`flex flex-col items-center justify-center gap-3 w-full border-2 border-dashed rounded-lg p-10 cursor-pointer transition-colors ${
+                    housePlansFile
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/60"
+                  }`}
+                >
+                  <FileUp
+                    size={28}
+                    className={housePlansFile ? "text-primary" : "text-muted-foreground"}
+                  />
+                  {housePlansFile ? (
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="font-body text-sm font-semibold text-foreground">
+                        {housePlansFile.name}
+                      </span>
+                      <span className="font-body text-xs text-muted-foreground">
+                        {(housePlansFile.size / 1024 / 1024).toFixed(2)} MB
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="font-body text-sm font-semibold text-foreground">
+                        Click to upload a PDF
+                      </span>
+                      <span className="font-body text-xs text-muted-foreground">
+                        PDF only · Max 20 MB
+                      </span>
+                    </div>
+                  )}
+                  <input
+                    id="housePlans"
+                    type="file"
+                    accept=".pdf,application/pdf"
+                    className="sr-only"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      if (file && file.type !== "application/pdf") {
+                        setError("Only PDF files are accepted.");
+                        e.target.value = "";
+                        return;
+                      }
+                      setHousePlansFile(file);
+                      setError(null);
+                    }}
+                  />
+                </label>
+
+                {housePlansFile && (
+                  <button
+                    type="button"
+                    onClick={() => setHousePlansFile(null)}
+                    className="flex items-center gap-1.5 font-body text-xs text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    <X size={13} />
+                    Remove file
+                  </button>
+                )}
+              </fieldset>
+
+              {/* COMMENTED OUT — Exterior Materials section (saved for future use)
               <fieldset className="space-y-4">
                 <legend className="font-display text-2xl text-foreground mb-2">
                   Exterior Materials
@@ -296,7 +353,6 @@ const GetAQuote = () => {
                   Add each material you're interested in along with its provider.
                 </p>
 
-                {/* Added materials list */}
                 {form.materials.length > 0 && (
                   <div className="space-y-2">
                     {form.materials.map((mat, i) => (
@@ -330,7 +386,6 @@ const GetAQuote = () => {
                   </div>
                 )}
 
-                {/* Draft entry row */}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="materialName">Material</Label>
@@ -391,6 +446,7 @@ const GetAQuote = () => {
                   Add Material
                 </Button>
               </fieldset>
+              */}
 
               {/* COMMENTED OUT — checkbox material selector (saved for future use)
               <fieldset className="space-y-4">
@@ -448,11 +504,12 @@ const GetAQuote = () => {
                         <SelectValue placeholder="Select a range" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="under-50k">Under $50K</SelectItem>
-                        <SelectItem value="50k-150k">$50K – $150K</SelectItem>
-                        <SelectItem value="150k-500k">$150K – $500K</SelectItem>
+                        <SelectItem value="under-75k">Under $75K</SelectItem>
+                        <SelectItem value="75k-150k">$75K – $150K</SelectItem>
+                        <SelectItem value="150k-250k">$150K – $250K</SelectItem>
+                        <SelectItem value="250k-500k">$250K – $500K</SelectItem>
                         <SelectItem value="500k-1m">$500K – $1M</SelectItem>
-                        <SelectItem value="over-1m">Over $1M</SelectItem>
+                        <SelectItem value="over-1m">$1M+</SelectItem>
                         <SelectItem value="unknown">Not Sure Yet</SelectItem>
                       </SelectContent>
                     </Select>
