@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import hero1 from "@/assets/hero-1.jpg";
-import hero2 from "@/assets/hero-2.jpg";
-import hero3 from "@/assets/hero-3.jpg";
-import hero4 from "@/assets/hero-4.jpg";
+import hero1 from "@/assets/hero-1.webp";
+import hero2 from "@/assets/hero-2.webp";
+import hero3 from "@/assets/hero-3.webp";
+import hero4 from "@/assets/hero-4.webp";
 
 const slides = [
   {
@@ -46,26 +46,24 @@ const HeroSlider = () => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Background images */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0"
+      {/* Background images — all rendered in DOM to prevent fetch-on-transition flash */}
+      {slides.map((slide, i) => (
+        <div
+          key={i}
+          className="absolute inset-0 transition-opacity duration-700"
+          style={{ opacity: i === current ? 1 : 0 }}
         >
           <img
-            src={slides[current].image}
-            alt={slides[current].title}
+            src={slide.image}
+            alt={slide.title}
             className="w-full h-full object-cover"
             width={1920}
             height={1080}
+            loading={i === 0 ? "eager" : "lazy"}
           />
           <div className="absolute inset-0 bg-background/60" />
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      ))}
 
       {/* Slide content */}
       <div className="relative z-10 flex flex-col justify-end h-full pb-24 px-6 md:px-12 lg:px-24">

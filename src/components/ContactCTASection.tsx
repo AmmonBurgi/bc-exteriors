@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import hero5 from "@/assets/hero-5.jpg";
+import hero5 from "@/assets/hero-5.webp";
 
 const ContactCTASection = () => {
   const navigate = useNavigate();
