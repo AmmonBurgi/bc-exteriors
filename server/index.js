@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import multer from "multer";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -29,16 +29,7 @@ const upload = multer({
   },
 });
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  family: 4, // force IPv4 — Railway does not support IPv6 outbound
-  secure: process.env.SMTP_SECURE === "true",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function buildEmailHtml(data) {
   const projectTypeLabels = {
@@ -171,19 +162,20 @@ app.post("/api/quote", upload.single("housePlans"), async (req, res) => {
     attachments.push({
       filename: req.file.originalname,
       content: req.file.buffer,
-      contentType: "application/pdf",
     });
   }
 
   try {
-    await transporter.sendMail({
-      from: `"B&C Exteriors Quote Form" <${process.env.SMTP_USER}>`,
-      to: "isaacb@bncexteriors.com",
-      replyTo: data.email,
+    const { error } = await resend.emails.send({
+      from: process.env.RESEND_FROM || "B&C Exteriors Quote Form <noreply@bncexteriors.com>",
+      to: ["gitammonburgi@gmail.com"],
+      reply_to: data.email,
       subject: `New Quote Request — ${data.firstName} ${data.lastName}`,
       html: buildEmailHtml(data),
       attachments,
     });
+
+    if (error) throw error;
 
     res.json({ ok: true });
   } catch (err) {
