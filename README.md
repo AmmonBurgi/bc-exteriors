@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# B&C Exteriors
 
-TODO: Document your project here
+Professional exterior construction services website.
