@@ -167,8 +167,8 @@ app.post("/api/quote", upload.single("housePlans"), async (req, res) => {
 
   try {
     const { error } = await resend.emails.send({
-      from: process.env.RESEND_FROM || "B&C Exteriors Quote Form <noreply@bncexteriors.com>",
-      to: ["gitammonburgi@gmail.com"],
+      from: "B&C Exteriors Quote Form <noreply@bncexteriors.com>",
+      to: ["isaacb@bncexteriors.com"],
       reply_to: data.email,
       subject: `New Quote Request — ${data.firstName} ${data.lastName}`,
       html: buildEmailHtml(data),
